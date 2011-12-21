@@ -11,7 +11,8 @@ import os
 import sys
 
 def run(conf):
-    conf.ensure('NETWORK', 'PORT', 'CHANNEL', 'NICKNAME', 'COMMAND_PREFIX')
+    conf.ensure('NETWORK', 'PORT', 'CHANNEL', 'NICKNAME', 'COMMAND_PREFIX',
+                'WEBHOOKS', 'PLUGINS')
     if conf['WEBHOOKS']:
         conf.ensure('WEBHOOK_PORT')
     irc = IRCBotFactory(conf)
