@@ -20,6 +20,8 @@ Run
 
 Replace ``<path.to.settings>`` with a path to a settings file.
 
+Add the ``--verbose`` flag if you want to enable logging (to stdout).
+
 
 ********
 Settings

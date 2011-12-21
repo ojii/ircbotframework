@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
+class ImproperlyConfigured(Exception):
+    pass
+
+
 class Configuration(dict):
     @classmethod
     def from_module(cls, module, **defaults):
@@ -28,5 +32,5 @@ class Configuration(dict):
         else:
             translate = lambda key: key
         for key in keys:
-            if key not in keys:
-                raise RuntimeError("Configuration %r is required but not found" % translate(key))
+            if key not in self:
+                raise ImproperlyConfigured("Configuration %r is required but not found" % translate(key))
