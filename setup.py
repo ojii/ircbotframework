@@ -27,4 +27,8 @@ setup(name="ircbotframework",
     packages=['ircbotframework'],
     install_requires=['twisted'],
     zip_safe=False,
+    entry_points="""
+    [console_scripts]
+    ircbotframework = ircbotframework.main:main
+    """,
 )

@@ -6,6 +6,8 @@ from ircbotframework.http import Webhook
 from twisted.internet import reactor
 from twisted.python import log
 from twisted.web.server import Site
+import argparse
+import os
 import sys
 
 def run(conf):
@@ -30,9 +32,9 @@ def run_with_settings_module(module):
     run(conf)
 
 def main():
-    import argparse
+    sys.path.insert(0, os.getcwd())
     parser = argparse.ArgumentParser()
-    parser.add_argument('settings', required=True)
+    parser.add_argument('settings')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
     args = parser.parse_args()
     if args.verbose:
