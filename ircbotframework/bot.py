@@ -185,7 +185,7 @@ class IRCBot(irc.IRCClient):
         else:
             command, rest = raw_command, ''
         for plugin in self.plugins:
-            plugin.handle_message(user, channel, message)
+            plugin.handle_message(message, user, channel)
             if command:
                 plugin.handle_command(command, rest, user, channel)
     
