@@ -113,7 +113,7 @@ class IRCBot(irc.IRCClient):
         nick = rawuser.split('!')[0]
         mode = self.user_modes.get(nick, MODE_NORMAL)
         user = User(self, nick, mode)
-        self.handle_message(user, channel, message)
+        self.handle_message(message, channel, user)
 
     def irc_unknown(self, prefix, command, params):
         """
@@ -172,7 +172,7 @@ class IRCBot(irc.IRCClient):
                 
     # API proxies
                     
-    def handle_message(self, user, channel, message):
+    def handle_message(self, message, channel, user):
         """
         Handles a single message
         
@@ -185,9 +185,9 @@ class IRCBot(irc.IRCClient):
         else:
             command, rest = raw_command, ''
         for plugin in self.plugins:
-            plugin.handle_message(message, user, channel)
+            plugin.handle_message(message, channel, user)
             if command:
-                plugin.handle_command(command, rest, user, channel)
+                plugin.handle_command(command, rest, channel, user)
     
     def handle_joined(self, channel):
         """
