@@ -1,0 +1,9 @@
+*.pyc
+.*
+!.gitignore
+!.coveragerc
+/htmlcov/
+/ircbotframework.egg-info/
+/env/
+/dist/
+/build/

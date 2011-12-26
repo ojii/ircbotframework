@@ -10,7 +10,7 @@ import argparse
 import os
 import sys
 
-def run(conf):
+def run(conf): # pragma: no cover
     conf.ensure('NETWORK', 'PORT', 'CHANNEL', 'NICKNAME', 'COMMAND_PREFIX',
                 'WEBHOOKS', 'PLUGINS')
     if conf['WEBHOOKS']:
@@ -23,7 +23,7 @@ def run(conf):
         pass
     reactor.run()
 
-def run_with_settings_module(module):
+def run_with_settings_module(module): # pragma: no cover
     conf = Configuration.from_module(module,
         WEBHOOKS=False,
         PLUGINS=[],
@@ -32,7 +32,7 @@ def run_with_settings_module(module):
     )
     run(conf)
 
-def main():
+def main(): # pragma: no cover
     sys.path.insert(0, os.getcwd())
     parser = argparse.ArgumentParser()
     parser.add_argument('settings')
@@ -43,5 +43,5 @@ def main():
     module = import_module(args.settings)
     run_with_settings_module(module)
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     main()

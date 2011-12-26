@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = ircbotframework
+
+[report]
+precision = 2

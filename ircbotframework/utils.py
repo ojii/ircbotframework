@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from importlib import import_module
+import re
 
 def load_object(import_path):
     """
@@ -21,3 +22,5 @@ def load_object(import_path):
     module_name, object_name = import_path.rsplit('.', 1)
     module = import_module(module_name)
     return getattr(module, object_name)
+
+get_plugin_conf_key = lambda class_name: re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\1', class_name).upper().strip('_')

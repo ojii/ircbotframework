@@ -187,7 +187,7 @@ class IRCBot(irc.IRCClient):
         for plugin in self.plugins:
             plugin.handle_message(message, channel, user)
             if command:
-                plugin.handle_command(command, rest, channel, user)
+                plugin._handle_command(command, rest, channel, user)
     
     def handle_joined(self, channel):
         """
@@ -201,7 +201,7 @@ class IRCBot(irc.IRCClient):
         Handles a http request by calling each plugins handle_http method
         """
         for plugin in self.plugins:
-            plugin.handle_http(request)
+            plugin._handle_http(request)
             
 
 class IRCBotFactory(protocol.ClientFactory):

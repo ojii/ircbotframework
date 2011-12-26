@@ -1,28 +1,78 @@
 # -*- coding: utf-8 -*-
+from ircbotframework.utils import get_plugin_conf_key
+
+class CommandsRegistry(dict):
+    def __call__(self, name):
+        def decorator(meth):
+            self[name] = meth
+        return decorator
+
+
+class RoutesRegistry(dict):
+    def __call__(self, route):
+        def decorator(meth):
+            self[route] = meth
+        return decorator
 
 
 class BasePlugin(object):
+    commands = CommandsRegistry()
+    routes = RoutesRegistry()
+    conf_key = None
+    default_confs = None
+    required_confs = None
+    
     def __init__(self, protocol, conf):
         self.protocol = protocol
         self.conf = conf
+        conf_key = self.conf_key or get_plugin_conf_key(self.__class__.__name__)
+        defaults = self.default_confs or {}
+        required = self.required_confs or ()
+        self.plugin_conf = self.conf.get_sub_conf(conf_key, **defaults)
+        self.plugin_conf.ensure(*required)
+        self.post_init()
+        
+    # Internal
+        
+    def _handle_command(self, command, rest, channel, user):
+        """
+        INTERNAL
+        """
+        handler = self.commands.get(command, None)
+        if handler is not None:
+            handler(self, rest, channel, user)
+    
+    def _handle_http(self, request):
+        """
+        INTERNAL
+        """
+        for route, handler in self.routes.items():
+            match = route.match(request.path)
+            if match:
+                kwargs = match.groupdict()
+                if kwargs:
+                    args = ()
+                else:
+                    args = match.groups()
+                handler(self, request, *args, **kwargs)
+                
+    # Utility
     
     def message_channel(self, message):
         """
         Convenience function to message the default channel.
         """
         self.protocol.msg(self.protocol.factory.conf['CHANNEL'], message)
-        
-    def handle_command(self, command, rest, channel, user):
-        """
-        Semi-internal API.
-        
-        You should implement a command_xyz method for all your commands,
-        replacing xyz with your command name.
-        """
-        handler = getattr(self, 'command_%s' % command, None)
-        if callable(handler):
-            handler(rest, channel, user)
 
+    # API
+        
+    def post_init(self):
+        """
+        Can be overwritten by subclasses if they want to do special stuff after
+        init.
+        """
+        pass
+    
     def handle_message(self, message, channel, user):
         """
         Handle a single message sent to a channel by a user
@@ -32,11 +82,5 @@ class BasePlugin(object):
     def handle_joined(self, channel):
         """
         After the channel was joined
-        """
-        pass
-    
-    def handle_http(self, request):
-        """
-        Handle a HTTP request to the webhook
         """
         pass

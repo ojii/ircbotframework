@@ -12,4 +12,5 @@ NICKNAME = 'ircbotframeworktestbot'
 PLUGINS = [
     'test_plugins.EchoPlugin',
     'test_plugins.WebhookPlugin',
+    'test_plugins.CommandPlugin',
 ]

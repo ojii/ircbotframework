@@ -17,6 +17,7 @@ class Configuration(dict):
         defaults.update({k[len(fullkey):]:v for k,v in conf.items() if k.startswith(fullkey)})
         conf = cls(defaults)
         conf.chain = [key]
+        return conf
     
     def get_sub_conf(self, key, **defaults):
         conf = Configuration.from_configuration(self, key, **defaults)
@@ -27,7 +28,7 @@ class Configuration(dict):
     def ensure(self, *keys):
         chain = getattr(self, 'chain', [])
         if chain:
-            chainstr = '_'.join(chain + [''])
+            chainstr = '_'.join(chain)
             translate = lambda key: '%s_%s' % (chainstr, key)
         else:
             translate = lambda key: key
