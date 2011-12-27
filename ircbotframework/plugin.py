@@ -1,23 +1,16 @@
 # -*- coding: utf-8 -*-
 from ircbotframework.utils import get_plugin_conf_key
 
-class CommandsRegistry(dict):
+class RegistryDictionary(dict):
     def __call__(self, name):
         def decorator(meth):
             self[name] = meth
         return decorator
 
 
-class RoutesRegistry(dict):
-    def __call__(self, route):
-        def decorator(meth):
-            self[route] = meth
-        return decorator
-
-
 class BasePlugin(object):
-    commands = CommandsRegistry()
-    routes = RoutesRegistry()
+    commands = RegistryDictionary()
+    routes = RegistryDictionary()
     conf_key = None
     default_confs = None
     required_confs = None
