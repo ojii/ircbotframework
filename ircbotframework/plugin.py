@@ -79,7 +79,7 @@ class BasePlugin(object):
         """
         pass
     
-    def handle_mention_message(self, message, channel, user):
+    def handle_mention(self, message, channel, user):
         """
         If the bot gets mentioned (eg 'YourBot, how are you?' if 'YourBot' is
         the name of your bot. The message will not contain the bot name and the

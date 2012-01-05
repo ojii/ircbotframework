@@ -197,7 +197,7 @@ class IRCBot(irc.IRCClient):
             if command:
                 plugin._handle_command(command, rest, channel, user)
             if is_mention:
-                plugin.handle_mention_message(mention_message, channel, user)
+                plugin.handle_mention(mention_message, channel, user)
     
     def handle_joined(self, channel):
         """
