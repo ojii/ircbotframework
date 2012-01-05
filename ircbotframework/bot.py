@@ -2,10 +2,13 @@ from ircbotframework.utils import load_object
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
+import string
 
 MODE_NORMAL = 0
 MODE_VOICE = 1
 MODE_OPERATOR = 2
+
+NON_LETTERS = string.whitespace + string.punctuation
 
 class User(object):
     """
@@ -184,10 +187,17 @@ class IRCBot(irc.IRCClient):
             command, rest = raw_command.split(' ', 1)
         else:
             command, rest = raw_command, ''
+        is_mention = message.startswith(self.nickname)
+        if is_mention:
+            mention_message = message[len(self.nickname):].lstrip(NON_LETTERS)
+        else:
+            mention_message = ''
         for plugin in self.plugins:
             plugin.handle_message(message, channel, user)
             if command:
                 plugin._handle_command(command, rest, channel, user)
+            if is_mention:
+                plugin.handle_mention_message(mention_message, channel, user)
     
     def handle_joined(self, channel):
         """

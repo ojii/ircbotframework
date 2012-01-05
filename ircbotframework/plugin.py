@@ -5,6 +5,7 @@ class RegistryDictionary(dict):
     def __call__(self, name):
         def decorator(meth):
             self[name] = meth
+            return meth
         return decorator
 
 
@@ -75,5 +76,13 @@ class BasePlugin(object):
     def handle_joined(self, channel):
         """
         After the channel was joined
+        """
+        pass
+    
+    def handle_mention_message(self, message, channel, user):
+        """
+        If the bot gets mentioned (eg 'YourBot, how are you?' if 'YourBot' is
+        the name of your bot. The message will not contain the bot name and the
+        leading non-alphanumeric characters.
         """
         pass
