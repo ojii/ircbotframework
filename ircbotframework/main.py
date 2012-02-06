@@ -12,7 +12,7 @@ import sys
 
 def run(conf): # pragma: no cover
     conf.ensure('NETWORK', 'PORT', 'CHANNEL', 'NICKNAME', 'COMMAND_PREFIX',
-                'WEBHOOKS', 'PLUGINS')
+                'WEBHOOKS', 'APPS')
     if conf['WEBHOOKS']:
         conf.ensure('WEBHOOK_PORT')
     irc = IRCBotFactory(conf)
