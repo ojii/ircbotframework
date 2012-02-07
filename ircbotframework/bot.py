@@ -96,6 +96,7 @@ class IRCBot(irc.IRCClient):
                     self.command_help[commandname] = helptext
                 log.msg("Loaded plugin %s" % plugin)
         # since we're connected now, handle all buffered messages (from webhooks)
+        self.is_connected = True
         while self.factory.core._irc_messages:
             user, message = self.factory.core._irc_messages.pop(0)
             self.msg(user, message)
@@ -208,9 +209,9 @@ class IRCBot(irc.IRCClient):
         is_mention = message.startswith(self.nickname)
         if is_mention:
             mention_message = message[len(self.nickname):].lstrip(NON_LETTERS)
+            log.msg("It's a mention of me!")
         else:
             mention_message = ''
-        log.msg("It's a mention of me!")
         for plugin in self.plugins:
             plugin.handle_message(message, channel, user)
             if is_mention:
