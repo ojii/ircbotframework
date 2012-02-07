@@ -42,4 +42,7 @@ class Command(object):
                 return
             else:
                 setattr(namespace, argument.name, argument.default)
+        if bits:
+            channel.msg("Too many arguments. %r usage is: %s" % (self.name, self.get_usage()))
+            return
         self.handler(namespace, channel, user)
