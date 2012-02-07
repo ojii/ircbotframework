@@ -201,6 +201,7 @@ class IRCBot(irc.IRCClient):
         if command is not None:
             if command in self.commands:
                 # call the command
+                log.msg("Command found, calling...")
                 self.commands[command](message, channel, user)
 
         # check if this is a mention
@@ -209,6 +210,7 @@ class IRCBot(irc.IRCClient):
             mention_message = message[len(self.nickname):].lstrip(NON_LETTERS)
         else:
             mention_message = ''
+        log.msg("It's a mention of me!")
         for plugin in self.plugins:
             plugin.handle_message(message, channel, user)
             if is_mention:
