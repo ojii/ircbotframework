@@ -1,6 +1,7 @@
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
+import shlex
 import string
 
 MODE_NORMAL = 0
@@ -82,7 +83,6 @@ class IRCBot(irc.IRCClient):
         self.sendLine('NAMES %s' % self.factory.core.channel)
         self.plugins = []
         self.commands = {}
-        self.command_help = {}
         # load all plugins and commands
         for app in self.factory.core.apps:
             # iterate over the plugins in an app
@@ -91,9 +91,8 @@ class IRCBot(irc.IRCClient):
                 plugin = plugin_class(self.factory.core)
                 self.plugins.append(plugin)
                 # load all commands exposed by this plugin
-                for commandname, handler, helptext in plugin.get_commands():
-                    self.commands[commandname] = handler
-                    self.command_help[commandname] = helptext
+                for command in plugin.get_commands():
+                    self.commands[command.name] = command
                 log.msg("Loaded plugin %s" % plugin)
         # since we're connected now, handle all buffered messages (from webhooks)
         self.is_connected = True
@@ -196,14 +195,11 @@ class IRCBot(irc.IRCClient):
         Calls the plugin_message method on all plugins and if the message 
         starts with the command prefix, also calls handle_command.
         """
-        bits = message.split(' ')
-        command = bits[0] if bits else None
-        log.msg("Command is %s" % command)
-        if command is not None:
-            if command in self.commands:
-                # call the command
-                log.msg("Command found, calling...")
-                self.commands[command](message, channel, user)
+        bits = shlex.split(message)
+        command_name = bits.pop(0) if bits else None
+        if command_name in self.commands:
+            # call the command
+            self.commands[command_name].handle(bits, channel, user)
 
         # check if this is a mention
         is_mention = message.startswith(self.nickname)
@@ -221,12 +217,11 @@ class IRCBot(irc.IRCClient):
         """
         Handles a single private message
         """
-        bits = message.split(' ')
-        command = bits[0] if bits else None
-        if command is not None:
-            if command in self.commands:
-                # call the command
-                self.commands[command](message, user, user)
+        bits = shlex.split(message)
+        command_name = bits.pop(0) if bits else None
+        if command_name in self.commands:
+            # call the command
+            self.commands[command_name].handle(bits, user, user)
 
         for plugin in self.plugins:
             plugin.handle_privatemessage(message, user)
